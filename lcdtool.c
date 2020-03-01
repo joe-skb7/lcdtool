@@ -59,6 +59,11 @@ static bool parse_args(struct params *p, int argc, char **argv)
 {
 	int width;
 
+	if (argc == 2 && !strcmp(argv[1], "--help")) {
+		print_usage(argv[0]);
+		exit(EXIT_SUCCESS);
+	}
+
 	--argc;
 	++argv;
 
