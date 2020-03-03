@@ -28,31 +28,35 @@ typedef void (*map_func_t)(size_t in_byte, size_t in_bit, size_t width,
 
 static void print_usage(const char *app)
 {
-	printf("Usage:\n"
-	       "  %s <mono-image> <width> {v|h}\n"
-	       "  cat <mono-image> | %s <width> {v|h}\n\n"
-	       "Convert image for OLED usage. SSD1306 controller expects\n"
-	       "data to be arranged in one of two very specific ways:\n"
-	       "  - horizontal: 1 byte is 8 vertical bits, and next byte will\n"
-	       "                be on the right\n"
-	       "  - vertical: 1 byte is 8 vertical bits, and next byte will\n"
-	       "              be on the bottom\n\n"
-	       "This tool takes monochrome bitmap (not BMP, just raw binary!)\n"
-	       "in regular row-major order (where each byte represents 8\n"
-	       "horizontal bits in Little Endian, and each next byte is on\n"
-	       "the right), and transforms it to the bitmap for SSD1306 OLED,\n"
-	       "using specified addressing mode (h or v). Output file also\n"
-	       "has Little Endian byte order.\n\n"
-	       "Options:\n"
-	       "  <mono-image>  binary bitmap representation of image\n"
-	       "  <width>       image width\n"
-	       "  {v|h}         vertical or horizontal addressing\n\n"
-	       "Examples:\n\n"
-	       "  convert image.png mono:- | %s 128 h | xxd -i\n\n"
-	       "  convert image.png image.mono\n"
-	       "  %s image.mono 128 v > image.lcd\n"
-	       "  xxd -i image.lcd image.c\n",
-	       app, app, app, app);
+	printf(
+"Usage: %s [mono-image] <width> {v|h}\n"
+"\n"
+"Convert image for OLED usage. SSD1306 controller expects data to be arranged\n"
+"in one of two very specific ways:\n"
+" - horizontal: 1 byte is 8 vertical bits, and next byte will be on the right\n"
+" - vertical: 1 byte is 8 vertical bits, and next byte will be on the bottom\n"
+"\n"
+"This tool takes monochrome bitmap (not BMP, just raw binary!) in regular\n"
+"row-major order (where each byte represents 8 horizontal bits in \n"
+"Little Endian, and each next byte is on the right), and transforms it to the\n"
+"bitmap for SSD1306 OLED, using specified addressing mode (h or v).\n"
+"Output file also has Little Endian byte order.\n"
+"\n"
+"Options:\n"
+"  <mono-image>  binary bitmap representation of image;\n"
+"                can be omitted in case when it's passed to stdin\n"
+"  <width>       image width\n"
+"  {v|h}         vertical or horizontal addressing\n"
+"\n"
+"Examples:\n"
+"\n"
+"  $ convert image.png -colorspace gray -colors 2 -type bilevel mono:- | \\\n"
+"            %s 128 h | xxd -i\n"
+"\n"
+"  $ convert image.png -colorspace gray -colors 2 -type bilevel image.mono\n"
+"  $ %s image.mono 128 v > image.lcd\n"
+"  $ xxd -i image.lcd image.c\n",
+	       app, app, app);
 }
 
 static bool parse_args(struct params *p, int argc, char **argv)

@@ -49,7 +49,8 @@ will be printed to console `stdout`; image width is `128` pixels; use OLED
 horizontal addressing mode:
 
 ```
-$ convert image.png mono:- | lcdtool 128 h | xxd -i
+$ convert image.png -colorspace gray -colors 2 -type bilevel mono:- | \
+  lcdtool 128 h | xxd -i
 ```
 
 Prepare C array for OLED display from `image.png` image file; array's content
@@ -57,7 +58,7 @@ Prepare C array for OLED display from `image.png` image file; array's content
 is `128` pixels; use OLED vertical addressing mode:
 
 ```
-$ convert image.png image.mono
+$ convert image.png -colorspace gray -colors 2 -type bilevel image.mono
 $ lcdtool image.mono 128 v > image.lcd
 $ xxd -i image.lcd image.c
 ```
