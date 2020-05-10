@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 #include "file.h"
+#include "tools.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
@@ -9,8 +10,6 @@
 
 #define WIDTH_MIN	8
 #define WIDTH_MAX	4096
-#define BIT(n)		(1 << (n))
-#define UNUSED(v)	((void)v)
 
 enum mode {
 	MODE_HORIZONTAL,
@@ -62,6 +61,7 @@ static void print_usage(const char *app)
 static bool parse_args(struct params *p, int argc, char **argv)
 {
 	int width;
+	int err;
 
 	if (argc == 2 && !strcmp(argv[1], "--help")) {
 		print_usage(argv[0]);
@@ -84,10 +84,9 @@ static bool parse_args(struct params *p, int argc, char **argv)
 		p->fpath = NULL;
 	}
 
-	errno = 0;
-	width = strtol(argv[0], NULL, 10);
-	if (errno) {
-		perror("Error: Wrong width format");
+	err = str2int(&width, argv[0], 10);
+	if (err) {
+		fprintf(stderr, "Error: Wrong width format; err = %d\n", err);
 		return false;
 	}
 	p->width = width;
