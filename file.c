@@ -54,17 +54,31 @@ char *file_read(const char *path, size_t *len)
 	}
 
 	buf = malloc(READ_CHUNK);
+	if (!buf)
+		goto err_malloc;
+
 	while ((got = fread(buf + fsize, 1, READ_CHUNK, f)) == READ_CHUNK) {
 		fsize += READ_CHUNK;
 		buf = realloc(buf, fsize + READ_CHUNK);
+		if (!buf)
+			goto err_realloc;
 	}
 	fsize += got;
+
 	buf = realloc(buf, fsize);
+	if (!buf)
+		goto err_realloc;
 
 	if (f != stdin)
 		fclose(f);
-
 	if (len)
 		*len = fsize;
+
 	return buf;
+
+err_realloc:
+	free(buf);
+err_malloc:
+	fclose(f);
+	return NULL;
 }
