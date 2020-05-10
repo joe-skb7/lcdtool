@@ -1,5 +1,5 @@
 APP := lcdtool
-SOURCES := lcdtool.c file.c
+SOURCES := lcdtool.c file.c tools.c
 CFLAGS := -Wall -O2
 
 all: $(SOURCES)
