@@ -168,13 +168,17 @@ static void map_vertical(size_t in_byte, size_t in_bit, size_t width,
  * @param len Array elements count
  * @param width Columns count in 2D array
  * @param map Map function to use
- * @return Array in OLED format
+ * @return Array in OLED format or NULL on error
  */
 static char *arr2oled(const char *in, size_t len, size_t width, size_t height,
 		      map_func_t map)
 {
-	char *out = calloc(len, 1);
+	char *out;
 	size_t i, j;
+
+	out = calloc(len, 1);
+	if (!out)
+		return NULL;
 
 	for (i = 0; i < len; ++i) {
 		if (in[i] == 0x00)
@@ -218,14 +222,22 @@ int main(int argc, char *argv[])
 
 	map = p.mode == MODE_HORIZONTAL ? map_horizontal : map_vertical;
 	arr_trans = arr2oled(arr_orig, len, p.width, height, map);
+	if (!arr_trans) {
+		fprintf(stderr, "Error: Unable to transform array\n");
+		ret = EXIT_FAILURE;
+		goto err_transform;
+	}
 
 	wlen = fwrite(arr_trans, 1, len, stdout);
 	if (wlen != len) {
 		fprintf(stderr, "Error: Unable to write the whole file\n");
 		ret = EXIT_FAILURE;
+		goto err_write;
 	}
 
+err_write:
 	free(arr_trans);
+err_transform:
 	free(arr_orig);
 	return ret;
 }
