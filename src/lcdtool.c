@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "file.h"
-#include "tools.h"
+#include <file.h>
+#include <tools.h>
 #include <assert.h>
 #include <errno.h>
 #include <stdio.h>
